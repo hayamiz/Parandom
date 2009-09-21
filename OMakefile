@@ -1,0 +1,9 @@
+
+LDFLAGS += -pthread
+
+CFILES[] =
+    parandom
+
+MAIN = parandom
+
+.DEFAULT: $(CProgram $(MAIN), $(CFILES))
