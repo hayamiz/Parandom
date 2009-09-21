@@ -17,7 +17,7 @@ static volatile sig_atomic_t g_stop = 0;
 static void *
 run(void * arg)
 {
-#define SZ 624 * 64
+#define SZ 624 * 128
     uint32_t* rs;
     if (posix_memalign(&rs, 16, sizeof(uint32_t) * SZ) != 0){
         perror("posix_memalign");
@@ -40,7 +40,7 @@ int
 main(int argc, char ** argv)
 {
     pthread_t * th;
-    int threadnum = 16;
+    int threadnum = 8;
     int i;
     struct sigaction sa;
 
