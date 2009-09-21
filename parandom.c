@@ -7,10 +7,27 @@
 
 static void*
 run(void* arg){
-    int r;
+#define SZ 16
+    int rs[SZ];
     while(1){
-        r = rand();
-        fwrite(&r, sizeof(int), 1, stdout);
+        rs[0] = rand();
+        rs[1] = rand();
+        rs[2] = rand();
+        rs[3] = rand();
+        rs[4] = rand();
+        rs[5] = rand();
+        rs[6] = rand();
+        rs[7] = rand();
+        rs[8] = rand();
+        rs[9] = rand();
+        rs[10] = rand();
+        rs[11] = rand();
+        rs[12] = rand();
+        rs[13] = rand();
+        rs[14] = rand();
+        rs[15] = rand();
+
+        fwrite(rs, sizeof(int), SZ, stdout);
     }
 }
 
