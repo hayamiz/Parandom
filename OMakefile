@@ -1,10 +1,21 @@
 
 LDFLAGS += -pthread
-CFLAGS += -g
+CFLAGS += -g -O3
 
 CFILES[] =
     parandom
+    SFMT
 
 MAIN = parandom
+
+
+# SFMT settings
+SFMT.c: SFMT/SFMT.c
+  cp SFMT/SFMT.c SFMT.c
+
+CFLAGS += -I./SFMT
+CFLAGS += -DMEXP=19937
+
+CFLAGS += -msse2 -DHAVE_SSE2 # don't use if your CPU does not support SSE2
 
 .DEFAULT: $(CProgram $(MAIN), $(CFILES))

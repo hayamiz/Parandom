@@ -6,6 +6,9 @@
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
+#include <stdint.h>
+
+#include "SFMT.h"
 
 static volatile sig_atomic_t g_stop = 0;
 
@@ -14,24 +17,24 @@ static void *
 run(void * arg)
 {
 #define SZ 16
-    int rs[SZ];
+    uint32_t rs[SZ];
     while(!g_stop){
-        rs[0] = rand();
-        rs[1] = rand();
-        rs[2] = rand();
-        rs[3] = rand();
-        rs[4] = rand();
-        rs[5] = rand();
-        rs[6] = rand();
-        rs[7] = rand();
-        rs[8] = rand();
-        rs[9] = rand();
-        rs[10] = rand();
-        rs[11] = rand();
-        rs[12] = rand();
-        rs[13] = rand();
-        rs[14] = rand();
-        rs[15] = rand();
+        rs[0] = gen_rand32();
+        rs[1] = gen_rand32();
+        rs[2] = gen_rand32();
+        rs[3] = gen_rand32();
+        rs[4] = gen_rand32();
+        rs[5] = gen_rand32();
+        rs[6] = gen_rand32();
+        rs[7] = gen_rand32();
+        rs[8] = gen_rand32();
+        rs[9] = gen_rand32();
+        rs[10] = gen_rand32();
+        rs[11] = gen_rand32();
+        rs[12] = gen_rand32();
+        rs[13] = gen_rand32();
+        rs[14] = gen_rand32();
+        rs[15] = gen_rand32();
 
         fwrite(rs, sizeof(int), SZ, stdout);
     }
@@ -60,15 +63,10 @@ main(int argc, char ** argv)
     }
 
     th = malloc(sizeof(pthread_t) * threadnum);
-    srand(clock());
+    init_gen_rand(clock());
 
     for(i = 0;i < threadnum;i++){
         pthread_create(&th[i], NULL, run, NULL);
-    }
-
-    while(!g_stop){
-        sleep(1);
-        srand(clock());
     }
 
     for(i = 0;i < threadnum;i++){
