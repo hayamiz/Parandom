@@ -59,6 +59,11 @@ main(int argc, char ** argv)
         pthread_create(&th[i], NULL, run, NULL);
     }
 
+    while(!g_stop){
+        sleep(1);
+        init_gen_rand(clock());
+    }
+
     for(i = 0;i < threadnum;i++){
         pthread_join(th[i], NULL);
     }
