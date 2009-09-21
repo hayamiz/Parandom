@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <string.h>
 #include <stdint.h>
+#include <errno.h>
 
 #include "SFMT.h"
 
@@ -16,25 +17,14 @@ static volatile sig_atomic_t g_stop = 0;
 static void *
 run(void * arg)
 {
-#define SZ 16
-    uint32_t rs[SZ];
+#define SZ 624 * 64
+    uint32_t* rs;
+    if (posix_memalign(&rs, 16, sizeof(uint32_t) * SZ) != 0){
+        perror("posix_memalign");
+        exit(errno);
+    }
     while(!g_stop){
-        rs[0] = gen_rand32();
-        rs[1] = gen_rand32();
-        rs[2] = gen_rand32();
-        rs[3] = gen_rand32();
-        rs[4] = gen_rand32();
-        rs[5] = gen_rand32();
-        rs[6] = gen_rand32();
-        rs[7] = gen_rand32();
-        rs[8] = gen_rand32();
-        rs[9] = gen_rand32();
-        rs[10] = gen_rand32();
-        rs[11] = gen_rand32();
-        rs[12] = gen_rand32();
-        rs[13] = gen_rand32();
-        rs[14] = gen_rand32();
-        rs[15] = gen_rand32();
+        fill_array32(rs, SZ);
 
         fwrite(rs, sizeof(int), SZ, stdout);
     }
