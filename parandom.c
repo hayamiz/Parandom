@@ -4,12 +4,18 @@
 #include <unistd.h>
 #include <time.h>
 #include <pthread.h>
+#include <signal.h>
+#include <string.h>
 
-static void*
-run(void* arg){
+static volatile sig_atomic_t g_stop = 0;
+
+
+static void *
+run(void * arg)
+{
 #define SZ 16
     int rs[SZ];
-    while(1){
+    while(!g_stop){
         rs[0] = rand();
         rs[1] = rand();
         rs[2] = rand();
@@ -31,11 +37,27 @@ run(void* arg){
     }
 }
 
+void
+sighandler(int signo)
+{
+    g_stop = 1;
+}
+
 int
-main(int argc, char** argv){
-    pthread_t* th;
+main(int argc, char ** argv)
+{
+    pthread_t * th;
     int threadnum = 16;
     int i;
+    struct sigaction sa;
+
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = sighandler;
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGINT, &sa, NULL) < 0) {
+        perror("sigaction");
+        exit(1);
+    }
 
     th = malloc(sizeof(pthread_t) * threadnum);
     srand(clock());
@@ -44,11 +66,18 @@ main(int argc, char** argv){
         pthread_create(&th[i], NULL, run, NULL);
     }
 
+    while(!g_stop){
+        sleep(1);
+        srand(clock());
+    }
+
     for(i = 0;i < threadnum;i++){
         pthread_join(th[i], NULL);
     }
     
     free(th);
+
+    fprintf(stderr, "parandom exit.\n");
 
     return 0;
 }
