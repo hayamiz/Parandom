@@ -40,7 +40,7 @@ int
 main(int argc, char ** argv)
 {
     pthread_t * th;
-    int threadnum = 8;
+    int threadnum = 1;
     int i;
     struct sigaction sa;
 
