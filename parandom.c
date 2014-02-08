@@ -48,13 +48,13 @@ main(int argc, char ** argv)
     struct sigaction sa;
 
     if (argc == 1) {
-        printf("Usage: %s THREAD_NUM\n", argv[0]);
+        fprintf(stderr, "Usage: %s THREAD_NUM\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
     threadnum = atoi(argv[1]);
     if (threadnum <= 0) {
-        printf("ERROR: invalid thread number: %s\n", argv[1]);
+        fprintf(stderr, "ERROR: invalid thread number: %s\n", argv[1]);
         exit(EXIT_FAILURE);
     }
 
