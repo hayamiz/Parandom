@@ -1,3 +1,4 @@
+/* -*- indent-tabs-mode: nil -*- */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@ run(void * arg)
 {
 #define SZ 624 * 128
     uint32_t* rs;
-    if (posix_memalign(&rs, 16, sizeof(uint32_t) * SZ) != 0){
+    if (posix_memalign((void **) &rs, 16, sizeof(uint32_t) * SZ) != 0){
         perror("posix_memalign");
         exit(errno);
     }
@@ -28,6 +29,8 @@ run(void * arg)
 
         fwrite(rs, sizeof(int), SZ, stdout);
     }
+
+    return NULL;
 }
 
 void
@@ -43,6 +46,17 @@ main(int argc, char ** argv)
     int threadnum = 1;
     int i;
     struct sigaction sa;
+
+    if (argc == 1) {
+        printf("Usage: %s THREAD_NUM\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    threadnum = atoi(argv[1]);
+    if (threadnum <= 0) {
+        printf("ERROR: invalid thread number: %s\n", argv[1]);
+        exit(EXIT_FAILURE);
+    }
 
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = sighandler;
